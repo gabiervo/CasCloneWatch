@@ -77,8 +77,16 @@ class clockModule{
     }
   }
 
-  String returnCurrTime(){
-  return (String){String(this->smallUnits[0]) + "\t" + String(this->smallUnits[1]) + "\t" + String(this->smallUnits[2]) };  
+  String returnCurrTime(String middleChar="\t"){
+    String res = "";
+
+    for(int i = 0; i < 3; i++){
+      String temp = (String){this->smallUnits[i]};
+      if(temp.length() < 2){temp = "0" + temp;}
+      res += temp;
+      if(i < 2){res += middleChar;}
+    }
+    return res;
   }
 };
 
@@ -89,6 +97,9 @@ void setup() {
   oled.begin(SSD1306_SWITCHCAPVCC, 0x3C);
   oled.fillScreen(WHITE);
   oled.display();
+
+  oled.setCursor(0, 0);
+  oled.setTextColor(WHITE);
 
   pinMode(btn1, INPUT_PULLUP);
   pinMode(btn2, INPUT_PULLUP);
@@ -106,9 +117,13 @@ void setup() {
 
 void loop() {
   myClock.generalUnitsProcess();
-  Serial.println( myClock.returnCurrTime() );
+
+  oled.setCursor(0, 0);
+  oled.fillScreen(BLACK);
+  oled.print(myClock.returnCurrTime(":"));
+  oled.display();
+
+  Serial.println( myClock.returnCurrTime(":") );
   Serial.println( String(myClock.largeUnits[0]) + "   " + String(myClock.largeUnits[1]));
+  delay(500);
 }
-
-
-
